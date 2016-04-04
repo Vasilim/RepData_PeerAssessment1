@@ -1,22 +1,24 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
-```{r}
+
+```r
 unzip("activity.zip")
 activity <- read.csv("activity.csv", sep = ",")
 ```
 
 ## What is mean total number of steps taken per day?
 
-```{r}
+
+```r
 meanSteps <- aggregate(activity$steps, list(activity$date), mean)
 hist(meanSteps$x, main = paste("Histogram of meanSteps"))
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
+
+```r
 meanS <- mean(meanSteps$x, na.rm=T)
 medianS <- median(meanSteps$x, na.rm=T)
 ```
@@ -24,17 +26,24 @@ medianS <- median(meanSteps$x, na.rm=T)
 
 ## What is the average daily activity pattern?
 
-```{r}
+
+```r
 nona <- na.omit(activity)
 meansIntervals <- aggregate(nona$steps, list(nona$interval), mean)
 plot(meansIntervals, type="l", xlab="Steps", ylab="count")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+
+```r
 ###The 5-minute interval that, on average, contains the maximum number of steps
 maxStepsInterval <- which(meansIntervals$x==max(meansIntervals$x), arr.ind=TRUE)
 ```
 
 
 ## Imputing missing values
-```{r}
+
+```r
 ###Total number of missing values
 naNumber <- sum(is.na(activity$steps))
 ###New data set where NA values replaces with means from the 5 minute interval across the dataset
@@ -48,7 +57,11 @@ for (i in 1:length(activity$date)){
 ###Histogram, mean, median with new data
 meanStepsNew <- aggregate(newData$steps, list(newData$date), mean)
 hist(meanStepsNew$x, main = paste("Histogram of meanStepsNew"))
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
+
+```r
 meanNew <- mean(meanStepsNew$x, na.rm=T)
 medianNew <- median(meanStepsNew$x, na.rm=T)
 ```
@@ -56,7 +69,8 @@ medianNew <- median(meanStepsNew$x, na.rm=T)
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r}
+
+```r
 library(timeDate)
 newData$date <- as.Date(newData$date)
 for (i in 1:length(newData$date)){
@@ -74,7 +88,8 @@ with(weekendMean, plot(x~Group.1, type = 'l', xlab="Interval",col="blue", ylab="
 par(mar = c(4.1, 4.1, 0, 2.1))
 with(weekdayMean, plot(x~Group.1, type = 'l',xlab="Interval", col="red", ylab="Steps"))
 legend(40,200, lty=c(1,1),  bty = "n",c("Weekend","Weekday"),col=c("blue","red")) 
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
 
 
